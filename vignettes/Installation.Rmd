@@ -1,0 +1,40 @@
+---
+title: "Install this R Package"
+---
+
+This R package is available on [UMN Enterprise GitHub](https://github.umn.edu/mpc/DHScalendars) to all MPC members. 
+
+Derek Burk maintains an R package called `umnstall` that makes it easy to install R packages from UMN Enterprise GitHub. Follow his [instructions to install umnstall](https://github.umn.edu/burkx031/umnstall), then run this code in R:
+
+```{r, eval = F}
+umnstall::umnstall("mpc/DHScalendars")
+```
+
+# Alternative method
+
+If you are unable to install `DHScalendars` using the method above, you may also install it using `devtools`. This procedure will install dependencies, but it will take much longer than `umnstall` (and you may need to restart R multiple times). 
+
+First [create a GitHub personal access token (PAT)](https://github.umn.edu/settings/tokens) if you don't have one already,
+being sure to check the box for "repo" scope on the generate token page. 
+
+Next, add a line like this to the file ".Renviron" in your home directory (create the file if it doesn't exist):
+
+```{r eval=FALSE}
+GITHUB_PAT = "<copy your PAT here>"
+```
+
+Next, restart your R session (Ctrl/Cmd + Shift + F10) so that the GITHUB_PAT 
+environment variable gets created.
+
+Finally, install the `DHScalendars` package using:
+
+```{r eval=FALSE}
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github(
+  "mpc/DHScalendars", 
+  host = "github.umn.edu/api/v3",
+  dependencies = TRUE
+)
+```
+
+When prompted, we suggest choosing the option to install all packages from CRAN (not source). 

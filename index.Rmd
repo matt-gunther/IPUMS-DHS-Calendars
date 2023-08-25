@@ -1,0 +1,68 @@
+---
+title: "DHScalendars - Processing IPUMS DHS reproductive calendar data"
+author: Matt Gunther <mgunther@umn.edu>
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+Looking to get started as quickly as possible? Check out these articles as necessary:
+
+  * [Installation](./articles/Installation.html) - How to install this R package
+  * [Quick start](./articles/Quick-Start.html) - How to process a new sample in minutes
+  * [Variables in the LR file](./articles/Variables-in-LR-File.html) - Understanding the output
+  
+You'll also find documentation for all package functions (including information on the calculation of derived variables) on the [Reference](./reference/index.html) page. 
+
+# What is DHS reproductive calendar data?
+
+Many Individual Recode (IR) datasets contain one or more calendar strings representing monthly recall data related to women's reproductive behavior. Each string consists of approximately 80 single-character codes, where each character represents a woman's response to a recall question repeated for up to approximately 80 months. You'll find a robust tutorial on DHS Contraceptive Calendar Data [on the DHS website](https://www.dhsprogram.com/data/calendar-tutorial/).
+
+Any given sample may contain up to 9 different contraceptive calendars, but most contain only 1 or 2 calendars. As of this writing, samples have included calendars on these topics:
+
+  * **Reproductive Events** (common to *all* samples) - For each month, indicates whether the woman was pregnant, gave birth, experienced termination of a pregnancy, used one of several contraceptive methods, or none of the above.
+  * **Reasons for Discontinuation of Contraceptive Use** (common to *many* samples) - For the final month of continuous use of a contraceptive method, indicates the reason why a woman stopped using that method of contraception at the time.
+  * **Marital Status** - For each month, indicates whether the woman was married.
+  * **Place of Residence** - For each month, indicates whether the woman moved to a new place of residence and, if not, whether her place of residence was located in an urban area. 
+  * **Pregnancy Termination** - For months were a pregnancy was terminated, indicates the type of termination (abortion, miscarriage, or stillbirth)
+  * **Post-partum Amenorrhea** - For months following a pregnancy, indicates whether the woman experienced PPA for every month until she indicates that she did not experience PPA.
+  * **Breastfeeding** - For months following a birth, indicates whether the woman breastfed her child. 
+  * **Post-partum Abstinence** - For months following a pregnancy, indicates whether the woman maintained abstinence. 
+  * **Employment** - For each month, indicates whether the woman was employed and, if so, classifies employment type.
+  * **Ultrasound** - For each month of a pregnancy, indicates whether the woman had an ultrasound.
+  * **Source of Family Planning** - Not processed by IPUMS. 
+  * **Separation** - Not processed by IPUMS.
+  * **Source of Abortion Care** - Not processed by IPUMS.
+  
+The IR data file does not identify the topic of any calendar. Instead, the variable name associated with each calendar is usually labeled with the prefix `vcal_` followed by a number ranging from 1-9. The calendar data from one woman in a typical sample might look something like this:
+
+```{r, echo = F, message=F} 
+library(tidyverse)
+tibble(
+  caseid = "1",
+  vcal_1 = "        BPPPPPPPP00111111111111111111111111111111TPP0022222222222222222222BPPPPP",
+  vcal_2 = "                   2                                  2                         ",
+  vcal_3 = "        111111111111111111111111111111111111111111111111111111111111111111111111",
+  vcal_4 = "B", 
+  vcal_5 = "B",
+  vcal_6 = "B"
+) %>% 
+  glimpse()
+```
+
+Notice that this sample only contains 6 of the possible 9 calendar variables, and only 3 of these contains responses (you'll typically see a single string "B" if the variable was merely included as a placeholder; it contains no responses). It's not clear what topics are represented by `vcal_1`, `vcal_2`, and `vcal_3`, but notice that each of these strings contains 80 characters including at least 8 empty spaces on the left; the left-most response character represents the month of the interview, and the right-most response character represents the first month in the recall timeline (calendars are padded with spaces on the left-side, so that that full string length always exceeds the number of months in the recall timeline - in this case, women were asked to recall 72 months). 
+
+# How does IPUMS harmonize DHS reproductive calendar data?
+
+Our first task is to separate the single-character codes in each string, then pivot the data into a **long format** where each row represents one month in each woman's recall timeline. 
+
+Second, we create a number of derived variables from each of the calendars that were available for a given sample. We also create empty placeholder variables for calendars that were not available, such that *all samples have the same number of derived variables* even if some are entirely `NA`. At this point, we create a temporary **unlinked** data file (a compressed CSV) that lives in the folder `ipums/dhs/general/calendar/programming/unlinked_lr_data`. 
+
+Lastly, we create a **linked** data file containing all of the derived calendar data *and* the original IR file (the non-calendar data will repeated in each row of a given woman's recall timeline, for up to 80 rows). 
+
+# What does this package do? 
+
+The purpose of this R package is to process the calendar data in the IR file, producing the **unlinked** data file discussed above. A separate Python script will find the unlinked data file and create a **linked** data file and Data Dictionary. 
+
+See the [Quick Start](./articles/Quick-Start.html) guide for instructions. 

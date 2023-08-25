@@ -1,0 +1,117 @@
+---
+title: "Variables in LR File"
+---
+
+This page contains a list of all the variables produced by `make_lr()` (53 in total). Each is accompanied by a brief description, but you'll need to consult the documentation of the listed function for a detailed explanation of how each variable was constructed with R code. 
+
+These are the final variable names (with "cal" prepended to each name shown in the function documentation). 
+
+# Technical Varibles 
+  * `caseid` - The original case identification sting from the IR source file.
+  * `calid` - A convenience identification number associated with each woman.
+  * `calseq` - Index number for each month in the woman's recall timeline, beginning with the first month (1) and ending with the interview month.
+  * `calcmc_month` - CMC code for the month 
+  * `calcaseid_cmc` - Concatenation of `caseid` and `calcmc_month`, separated by "_"
+
+# Reproductive Events Calendar 
+
+See documentation for `vcal_reprod()` for technical details on the calculation of each of the following variables. (Note: the Reproductive Events Calendar is almost always located in `vcal_1` in the IR file.)
+
+  * `vcal_reprod` - Numeric recode of the Reproductive Events Calendar. See the CSV file vcal_reprod_recodes.csv for recoding details. (Not available for months where no code was reported.)
+  * `vcal_reprod_dhs` - DHS codes used in the Reproductive Events Calendar. (You may compare these codes to `vcal_reprod` to ensure that recoding was completed correctly.)
+  * `calpreg` - Was the woman pregnant that month?
+  * `calbirth` - Did the woman give birth that month?
+  * `calterm` - Was the woman's pregnancy terminated that month (non-birth)?
+  * `calcontr` - Was the woman using a method of contraception that month? (Not available for some samples where only months of pregnancy, birth, or termination were recorded). 
+  * `calpreg_total` - Total number of months the woman was pregnant during the recall timeline. (Not available for months where no code was reported). 
+  * `calbirth_total` - Total number of months the woman gave birth during the recall timeline. (Not available for months where no code was reported). 
+  * `calterm_total` - Total number of months the woman experienced pregnancy termination during the recall timeline. (Not available for months where no code was reported). 
+  * `calcontr_total` - Total number of months the woman used a method of contraception during the recall timeline. (See `calcontr` for availability note).
+  * `calcontr_start` - Did the woman begin using a method of contraception that she was not using during the previous month? (Not available if the woman was pregnant, gave birth, or experienced pregnancy termination in either the current month *or* the previous month. Not available for the first month of the recall timeline.)
+  * `calcontr_change` - Did the woman begin using a method of contraception that was different from the one she was using during the previous month? Note: this variable is a special case of `calcontr_start`; if a woman was using no method during the previous month, `calcontr_change` shows `0` for "no change". (Not available if the woman was pregnant, gave birth, or experienced pregnancy termination in either the current month *or* the previous month. Not available for the first month of the recall timeline.)
+  * `caleventpbt` - Did the woman report any of the following that month: pregnancy, birth, or termination? (Not available for months where no code was reported). 
+  * `caleventwfp` - Did the woman report any of the following that month: pregnancy, birth, termination, **or contraceptive use**? (Not available for months where no code was reported). 
+  * `calpreg_rc` - For all months in a continuous pregnancy: did the outcome of that pregnancy (birth or termination) happen after the interview date? Note that a pregnancy can only be "right censored" if the last month of the recall calendar is "P". (Not available for months that are not part of a pregnancy, birth, or termination).
+  * `calpreg_lc` - For all months in a continuous pregnancy: did the pregnancy
+  overlap with the first month of the recall calendar? Note that a pregnancy can be "left censored" if the first month of the recall calendar was "P", "B", or "T". (Not available for months that are not part of a pregnancy, birth, or termination).
+  * `calpreg_length` - For all months in a continuous pregnancy **where the pregnancy was neither left- nor right-censored**, reports the length of the pregnancy including the month of birth / termination. (Not available for months that are not part of a pregnancy, birth, or termination. Not available for months of a pregnancy that is either left- or right-censored).
+  * `calpreg_long` - For all months in a continuous pregnancy **where the pregnancy was neither left- nor right-censored**, was the reported pregnancy length longer than 9 months, including the birth / termination month? (Not available for months outside of a continuous, non-censored pregnancy). 
+  
+# Discontinuation Calendar 
+
+See documentation for `vcal_discont()` for technical details on the calculation of each of the following variables. (Note: the Reproductive Events Calendar is usually - but not always - located in `vcal_2` in the IR file.)
+
+  * `vcal_discont` - Numeric recode of the Discontinuation Calendar. See the CSV file vcal_discont_recodes.csv for details. (Not available for months where no code was reported.)
+  * `vcal_discont_dhs` - DHS codes used in the Discontinuation Calendar. (You may compare these codes to `vcal_discont` to ensure that recoding was completed correctly.)
+  * `calreason` - A numeric code representing the reason the woman stopped using a contraceptive method that month. Currently, this variable is an exact copy of `vcal_discont`; this copy exists as a placeholder in case future versions of `vcal_discont` contain "reasons" that are logically invalid / should be excluded. (Not available for months where no code was reported.)
+  * `calcontr_stop` - Was this month the final month of continuous use of a contraceptive method? (See `vcal_discont()` notes on availability.)
+  * `calcontr_stop_total` - Total number of months where the woman discontinued use of any contraceptive method.
+
+# Marital Status Calendar 
+
+See documentation for `vcal_marstat()` for technical details on the calculation of each of the following variables. (Note: this calendar may be located in almost any calendar numbered `vcal_3` through `vcal_9` if it is available for a given sample; availability is highly limited.)
+
+  * `vcal_marstat` - DHS codes used for the Marital Status Calendar (not recoded by IPUMS).
+  * `calmarried` - Was the woman married that month? (Not available for months where no code was reported.)
+
+# Place of Residence Calendar 
+
+See documentation for `vcal_mig()` for technical details on the calculation of each of the following variables. (Note: this calendar may be located in almost any calendar numbered `vcal_3` through `vcal_9` if it is available for a given sample; availability is highly limited.)
+
+  * `vcal_mig` - DHS codes used for the Place of Residence Calendar (not recoded by IPUMS).
+  * `calmove` - Did the woman move to a new residence that month? (Not available for months where no code was reported.)
+  * `calurban` - What type of place did the woman live that month: urban or rural? (Not available for months where the woman moved to a new residence. Not available for months where no code was reported.)
+
+# Pregnancy Termination Calendar
+
+See documentation for `vcal_term()` for technical details on the calculation of each of the following variables. (Note: this calendar may be located in almost any calendar numbered `vcal_3` through `vcal_9` if it is available for a given sample; availability is highly limited.)
+
+  * `vcal_term` - DHS codes used for the Pregnancy Termination Calendar (not recoded by IPUMS).
+  * `calabort` - Was the woman's pregnancy terminated via abortion that month? (Not available for months where no code was reported.)
+  * `calcount_abort` - Total number of months per person where a pregnancy was terminated via abortion. (Not available for months where no code was reported.)
+  * `calmiscar` - Was the woman's pregnancy terminated in miscarriage that month? (Not available for months where no code was reported.)
+  * `calcount_miscar` - Total number of months per person where a pregnancy was terminated in miscarriage. (Not available for months where no code was reported.)
+  * `calsbirth` - Was the woman's pregnancy terminated in stillbirth that month? (Not available for months where no code was reported.)
+  * `calcount_sbirth` - Total number of months per person where a pregnancy was terminated in stillbirth. (Not available for months where no code was reported.)
+
+# Post-partum Amenorrhea Calendar 
+
+See documentation for `vcal_ppa()` for technical details on the calculation of each of the following variables. (Note: this calendar may be located in almost any calendar numbered `vcal_3` through `vcal_9` if it is available for a given sample; availability is highly limited.)
+  
+  * `vcal_ppa` - DHS codes used for the Post-partum Amenorrhea Calendar (not recoded by IPUMS).
+  * `calppam` - Did the woman experience PPA that month? (Not available for months where no code was reported.)
+
+# Breastfeeding Calendar 
+
+See documentation for `vcal_bfeed()` for technical details on the calculation of each of the following variables. (Note: this calendar may be located in almost any calendar numbered `vcal_3` through `vcal_9` if it is available for a given sample; availability is highly limited.)
+
+  * `vcal_bfeed` - DHS codes used for the Breastfeeding Calendar (not recoded by IPUMS).
+  * `calbreastf` - Did the woman breastfeed her child that month? (Not available for months where no code was reported.)
+
+# Post-partum Abstinence Calendar 
+
+See documentation for `vcal_ppabstain()` for technical details on the calculation of each of the following variables. (Note: this calendar may be located in almost any calendar numbered `vcal_3` through `vcal_9` if it is available for a given sample; availability is highly limited.)
+
+  * `vcal_ppabstain` - DHS codes used for the Post-partum Abstinence Calendar (not recoded by IPUMS).
+  * `calppabs` - Was the woman continuously abstinent following a pregnancy that month? (Not available for months where no code was reported.)
+
+# Employment Calendar  
+
+See documentation for `vcal_work()` for technical details on the calculation of each of the following variables. (Note: this calendar may be located in almost any calendar numbered `vcal_3` through `vcal_9` if it is available for a given sample; availability is highly limited.)
+  
+  * `vcal_work` - DHS codes used for the Employment Calendar (not recoded by IPUMS).
+  * `calempl` - How was the woman employed during that month, if at all? (Not available for months where no code was reported.)
+
+# Ultrasound Calendar  
+
+See documentation for `vcal_ultra()` for technical details on the calculation of each of the following variables. (Note: this calendar may be located in almost any calendar numbered `vcal_3` through `vcal_9` if it is available for a given sample; availability is highly limited.)
+ 
+  * `vcal_ultra` - DHS codes used for the Ultrasound Calendar (not recoded by IPUMS).
+  * `calultrasound` - Did the woman get an ultrasound that month? (Not available for months where no code was reported.)
+
+
+  
+
+
+  
+  

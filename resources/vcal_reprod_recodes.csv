@@ -1,0 +1,50 @@
+sample,year,input,output,output_label
+all,all,0,0,Non-use of contraception
+all,all,1,1,Pill
+all,all,2,2,IUD
+all,all,3,3,Injections
+all,all,4,4,Diaphragm
+all,all,5,5,Condom
+all,all,6,6,Female sterilization
+all,all,7,7,Male sterilization
+all,all,8,8,Periodic abstinence/rhythm
+all,all,9,9,Withdrawal
+all,all,A,10,Abstinence
+all,all,C,11,Female condom
+all,all,E,12,Emergency contraception
+all,all,F,13,Foam and jelly
+all,all,L,14,Lactational amenorrhea
+all,all,M,15,Other modern methods
+all,all,N,16,Implants/Norplant
+all,all,S,17,Standard days method
+all,all,W,18,Other traditional methods
+all,all,B,100,Birth
+all,all,P,200,Pregnancy
+all,all,T,300,Termination of Pregnancy
+BD3,all,H,21,Prolonged breastfeeding
+BD3,all,a,23,Country-specific method 1 
+BD4,all,H,26,Hysterectomy 
+EG2,all,G,21,Prolonged breastfeeding
+EG3,all,G,21,Prolonged breastfeeding
+EG4,2005,G,20,Monthly injections
+EG4,2000,G,21,Prolonged breastfeeding
+EG4,2003,G,21,Prolonged breastfeeding
+EG4,2005,R,21,Prolonged breastfeeding
+EG4,2000,D,22,Diaphragm/Foam/Jelly 
+EG4,2003,D,22,Diaphragm/Foam/Jelly 
+EG4,2005,K,22,Diaphragm/Foam/Jelly 
+EG4,2005,Z,25,Method continued with new source
+EG5,all,G,20,Monthly injections
+EG5,all,R,21,Prolonged breastfeeding
+EG5,all,K,22,Diaphragm/Foam/Jelly 
+EG6,all,G,20,Monthly injections
+EG6,all,H,21,Prolonged breastfeeding
+ET6,all,O,17,Standard days method
+JO5,2007,S,28,Suppository
+MD5,all,K,17,Standard days method
+ML6,all,R,17,Standard days method
+NG6,all,K,17,Standard days method
+NM6,all,K,24,Contraceptive patch
+RW6,all,D,17,Standard days method
+SN6,all,a,17,Standard days method
+ZA7,all,I,27,Injectables 2M NUR-ISTEATE

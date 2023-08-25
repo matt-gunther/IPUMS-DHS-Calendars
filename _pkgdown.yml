@@ -1,0 +1,54 @@
+destination: docs
+
+navbar:
+  structure:
+    left:  [home, reference, articles, news]
+    right: [search, github]
+
+reference:
+- title: "Probably the only function you'll ever need"
+  desc: >
+    Runs all of the other functions in the correct order to produce a
+    compressed CSV file at "general/calendar/unlinked_lr_data" in the
+    IPUMS DHS folder.
+- contents:
+  - "make_lr"
+
+- title: "Functions that derive variables from calendar strings"
+  desc: >
+    Each of these functions checks to see if a given calendar is available
+    for your sample and, if so, calculates all of derived variables
+    associated with that calendar. If a calendar is not available for your
+    sample, placeholder variables will be created (all values will be coded
+    NA). As a result, all samples will have the same number of columns.
+
+    Click a function to learn more about how variables are derived.
+- contents:
+  - starts_with("vcal")
+
+- title: "Read and Reshape an IR file"
+  desc: >
+    Because white-space characters can be meaningful in DHS calendar strings,
+    we use a modified version of \code{ipumsr::read_ipums_micro} to hold it
+    in place. We also only import variables that are necessary for working
+    with calendar data (improving the speed of import). We then check each
+    calendar string from anomolous formatting and generate specific errors with
+    instructions for next-steps. Finally, we parse each string and pivot the
+    single-character codes into independent rows, resulting in a data frame
+    that is (usually) 80 times longer than the original IR file.
+
+    Click a function to learn more about error messages and options for
+    locating important files.
+- contents:
+  - "get_vcal_input_data"
+  - "reshape_vcal_input_data"
+
+- title: "Clean-up and Write an LR file"
+  desc: >
+    Remove any extraneous information and finish processing the derived
+    calendar data as a compressed CSV file.
+
+    Click a function to learn more about warning messages and options
+    for writing to a custom location.
+- contents:
+  - "finalize_cal"

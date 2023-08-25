@@ -1,0 +1,58 @@
+sample,year,input,output,output_label
+all,all,1,1,Became pregnant while using
+all,all,2,2,Wanted to become pregnant
+all,all,3,3,Husband disapproved
+all,all,4,4,Side effects
+all,all,5,5,Health concerns
+all,all,6,6,Access/availability
+all,all,7,7,Wanted more effective method
+all,all,8,8,Inconvenient to use
+all,all,9,9,Infrequent sex/husband away
+all,all,C,10,Cost
+all,all,F,11,Fatalistic
+all,all,A,12,Difficult to get pregnant/menopause
+all,all,D,13,Marital dissolution
+all,all,W,14,Other reasons
+all,all,K,15,Do not know
+all,all,Q,98,Reason not provided
+all,all,q,98,Reason not provided
+all,all,?,98,Reason not provided
+EG2,all,E,16,IUD fell out
+EG2,all,M,36,Medical advice 
+EG2,all,S,37,Switch to another brand or method  
+EG2,all,B,38,Death of spouse
+EG2,all,X,41,IUD expired  
+EG4,2005,P,16,IUD fell out
+EG4,2003,N,16,IUD fell out
+EG4,all,O,17,Doctor opinion 
+EG4,2003,P,20,Husband travelling/ill 
+EG4,all,Q,21,Cannot get pregnant 
+EG4,all,J,22,Changed method
+EG4,all,K,23,Husband wants her pregnant 
+EG4,all,L,24,Afraid of forgetting method 
+EG4,all,M,25,Afraid of using method 
+EG4,all,R,26,Thinks she is pregnant
+EG5,all,O,17,Doctor opinion 
+ET4,all,M,19,Method not available
+IA5,all,G,27,Gained weight
+IA5,all,L,28,Lack of sexual satisfaction
+IA5,all,M,29,Created a menstrual problem
+IA5,all,N,30,Did not like method 
+IA5,all,P,31,Lack of privacy
+JO3,all,R,33,Rest
+JO3,all,P,36,Period returned 
+JO5,all,R,18,Ramadan
+JO5,all,T,20,Husband travelling/ill 
+JO5,all,B,40,End of breastfeeding  
+JO6,all,R,18,Ramadan
+JO6,all,E,32,The absence of one condition of breastfeeding
+JO6,all,G,33,Rest
+JO6,all,H,34,Expiration/lack of method
+JO6,all,I,35,Erectile dysfunction in husband  
+JO7,all,R,18,Ramadan
+NP6,all,H,20,Husband travelling/ill 
+NP7,all,H,20,Husband travelling/ill 
+IA6,all,P,14,Other reasons
+IA6,all,R,14,Other reasons
+IA6,all,S,14,Other reasons
+IA6,all,T,14,Other reasons

@@ -1,0 +1,121 @@
+#' @title Pregnancy Termination Calendar
+#' @author Matt Gunther
+#'
+#' @description Create all variables related to the Pregnancy Termination
+#' calendar
+#' (see details). If this calendar was not included in the sample (or if some
+#' of the required information is not available), all variables will still be
+#'  created, but all values will be NA.
+#' @details The following variables will be created using case logic provided
+#' to the function \code{dplyr::case_when()}. Please note that
+#' \code{case_when()} returns NA through implicit logic: \emph{if a "case"
+#' exists and is not explicitly handled here, the value NA will be returned!}
+#' \itemize{
+#'   \item{
+#'     \strong{abort} Logical: TRUE if \code{vcal_term} is "A" and
+#'     \code{vcal_reprod} indicates that the woman experienced pregnancy
+#'     termination (value 300). FALSE if \code{vcal_term} is any other
+#'     non-missing character (months of termination only).
+#'     NA if \code{vcal_reprod} shows no termination, if \code{vcal_term} is
+#'     not included in the sample, or if the response in \code{vcal_term} is
+#'     missing.
+#'   }
+#'   \item{
+#'     \strong{abort_total} Integer: total number of months per person where
+#'     \code{abort} is TRUE.
+#'
+#'     Zero if none of the woman's terminations were abortions.
+#'
+#'     NA if the woman never experienced pregnancy termination, or if
+#'     \code{vcal_term} was not included in the sample.
+#'
+#'     All months for a given woman reflect the same total
+#'     (this is not a cumulative sum).
+#'   }
+#'   \item{
+#'     \strong{miscar} Logical: TRUE if \code{vcal_term} is "M" or "C" and
+#'     \code{vcal_reprod} indicates that the woman experienced pregnancy
+#'     termination (value 300). FALSE if \code{vcal_term} is any other
+#'     non-missing character (months of termination only).
+#'     NA if \code{vcal_reprod} shows no termination, if \code{vcal_term} is
+#'     not included in the sample, or if the response in \code{vcal_term} is
+#'     missing.
+#'   }
+#'   \item{
+#'     \strong{miscar_total} Integer: total number of months per person where
+#'     \code{miscar} is TRUE.
+#'
+#'     Zero if none of the woman's terminations were miscarriages
+#'
+#'     NA if the woman never experienced pregnancy termination, or if
+#'     \code{vcal_term} was not included in the sample.
+#'
+#'     All months for a given woman reflect the same total
+#'     (this is not a cumulative sum).
+#'   }
+#'   \item{
+#'     \strong{sbirth} Logical: TRUE if \code{vcal_term} is "S" and
+#'     \code{vcal_reprod} indicates that the woman experienced pregnancy
+#'     termination (value 300). FALSE if
+#'     \code{vcal_term} is any other non-missing character
+#'     (months of termination only).
+#'     NA if \code{vcal_reprod} shows no termination, if \code{vcal_term} is
+#'     not included in the sample, or if the response in \code{vcal_term} is
+#'     missing.
+#'   }
+#'   \item{
+#'     \strong{sbirth_total} Integer: total number of months per person where
+#'     \code{sbirth} is TRUE.
+#'
+#'     Zero if none of the woman's terminations were stillbirths.
+#'
+#'     NA if the woman never experienced pregnancy termination, or if
+#'     \code{vcal_term} was not included in the sample.
+#'
+#'     All months for a given woman reflect the same total
+#'     (this is not a cumulative sum).
+#'   }
+#' }
+#' @param dat A data file created by \code{vcal_reprod()} (may be passed to
+#' any other function starting with "vcal" first).
+#' @export vcal_term
+vcal_term <- function(dat){
+  # preserve attributes
+  dhs_path <- attr(dat, "dhs_path")
+  samp <- attr(dat, "sample")
+
+  # make new variable(s)
+  is_avail <- !all(is.na(dat$vcal_term))
+
+  dat <- dat %>%
+    mutate(
+      abort = case_when(
+        vcal_term == "A" & vcal_reprod == 300 ~ T,
+        vcal_term %in% c("M", "C", "S") & vcal_reprod == 300 ~ F
+      ),
+      miscar = case_when(
+        vcal_term %in% c("M", "C") & vcal_reprod == 300 ~ T,
+        vcal_term %in% c("A", "S") & vcal_reprod == 300 ~ F
+      ),
+      sbirth = case_when(
+        vcal_term == "S" & vcal_reprod == 300 ~ T,
+        vcal_term %in% c("M", "C", "A") & vcal_reprod == 300 ~ F
+      )
+    ) %>%
+    group_by(caseid) %>%
+    mutate(
+      across(
+        c(abort, miscar, sbirth),
+        ~case_when(is_avail & !all(is.na(.x)) ~ sum(.x, na.rm = TRUE)),
+        .names = "{.col}_total"
+      )
+    ) %>%
+    ungroup()
+
+
+  # Re-attach attributes
+  attr(dat, "dhs_path") <- dhs_path
+  attr(dat, "sample") <- samp
+
+  return(dat)
+}

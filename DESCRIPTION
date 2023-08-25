@@ -1,0 +1,24 @@
+Package: DHScalendars
+Type: Package
+Title: Process DHS Reproductive Calendar Data
+Version: 1.0.1
+URL: https://github.umn.edu/mpc/dhscalendars/
+Author: Matt Gunther <mgunther@umn.edu>
+Maintainer: Matt Gunther <mgunther@umn.edu>
+Description: Calendar strings are parsed and analyzed, creating new variables.
+License: MPL-2
+Encoding: UTF-8
+LazyData: true
+Depends:
+    ipumsr,
+    mpctools,
+    tidyverse,
+    R (>= 2.10)
+Imports:
+    ipumsr,
+    mpctools,
+    tidyverse
+VignetteBuilder: knitr
+RoxygenNote: 7.1.2
+Suggests: 
+    rmarkdown

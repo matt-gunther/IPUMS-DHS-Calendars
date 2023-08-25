@@ -1,0 +1,185 @@
+---
+title: "Quick Start"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = FALSE
+)
+options(knitr.kable.NA = '')
+
+library(tidyverse)
+library(kableExtra)
+```
+
+In most cases, you should be able to process a new sample in just a few minutes if you follow these steps:
+
+  1. Identify the available calendars and mark them in `vcal_availability.csv`
+  2. Identify any sample-specific codes for the **Reproductive Events** calendar, which we'll call `vcal_reprod` (this is almost always stored in `vcal_1` in the IR file). Enter sample-specific recoding in `vcal_repord_recodes.csv`.
+  3. Identify any sample-specific codes for the **Discontinuation** calendar, which we'll call `vcal_discont` (if available, this is *usually* stored in `vcal_2` in the IR file). Enter sample-specific recoding in `vcal_discont_recodes.csv`. 
+  4. Use the R function `make_lr()` to create an unlinked LR file for your sample in the folder at `dhs/general/calendar/programming/unlinked_lr_data`.
+  5. Use the Python function `dhs_calendar_linking` to create a linked LR data file and a data dictionary in the `dhs/country` folder for your sample.
+  
+All `lr` files made this way will have the same number of calendar variables (all values will be `NA` if a particular source calendar was not available).  They will contain one row per woman per month in the calendar recall timeline.
+
+# vcal_availability.csv
+
+Locate the file at `./ipums/dhs/general/calendar/sample_tracking/vcal_availability.csv` (substitute "." for the location of the ipums folder on your system). 
+
+The availability of calendars for each sample is recorded in this CSV file. **Enter the availability of calendars for your sample in the next available row**. You should not enter the number for any calendar where the only available values are "B" or otherwise missing. Consult the [DHS Final Report](https://dhsprogram.com/publications/index.cfm) for your sample for help with this task.
+
+*Preview as of this writing:*
+
+```{r, message=FALSE}
+read_csv("../resources/vcal_availability.csv") %>% 
+  kable() %>% 
+  kable_styling() %>% 
+  scroll_box(width = "800px", height = "500px")
+```
+
+For example, see sample `af2015ir` in row 1. The IR file for this sample contains 9 numbered `vcal_` variables, but only the first two contain data, while the others contains a single empty character string (i.e. " ") for each woman. One woman's record in the IR file would look something like this: 
+
+```{r}
+tibble(
+  vcal_1 = "                 555555555555500BPPPPPPPP555555BPPPPPPPP000000000000000000000000",
+  vcal_2 = "                                         1                                      ",
+  vcal_3 = " ",
+  vcal_4 = " ",
+  vcal_5 = " ",
+  vcal_6 = " ",
+  vcal_7 = " ",
+  vcal_8 = " ",
+  vcal_9 = " "
+) %>% 
+  glimpse() 
+```
+
+In this example, it's clear that `vcal_1` represents the reproductive events calendar, `vcal_reprod` (note that it contains the tell-tale "B" - or birth - preceded by several months of "P" - or pregnancy). This follows the normal pattern for most samples (all that we've processed as of this writing). The second calendar `vcal_2` is probably the discontinuation calendar `vcal_discont` (note that it only contains a value for the last month in a string of months where the sample contraceptive method was used). 
+
+If you cannot easily determine what topic a particular calendar covers, you'll need to consult the available sample documentation (especially Final Report documents) on the DHS website. You may also try comparing your sample to an earlier sample from the same country. As a last resort, make a guess and run the sample: if you get an error or a distribution of responses that doesn't match other sample data, try again! 
+
+**Warning: vcal columns can only store numbers. Please use the number associated with the vcal_ variable for your sample.** In rare cases, you may find calendar data stored in the IR file under an unusual name (see eg2995ir `vcal_term`). In this case, please insert the number 0 in place of the unusual name; you will need to hard-code this information into the file `reshape_vcal_input_data.R`.
+
+# vcal_reprod_recodes.csv
+
+Locate the file at `./ipums/dhs/general/calendar/sample_tracking/vcal_reprod_recodes.csv` (substitute "." for the location of the ipums folder on your system). 
+
+Once you've identified the reproductive events calendar `vcal_reprod` , you'll need to check to see if it contains any sample-specific codes. Consult the [DHS Final Report](https://dhsprogram.com/publications/index.cfm) for your sample for help with this task.
+
+You'll then enter recoding information into this CSV file. 
+
+*Preview as of this writing:*
+
+```{r, message=FALSE}
+read_csv("../resources/vcal_reprod_recodes.csv") %>%
+  kable() %>%
+  kable_styling() %>%
+  scroll_box(height = "500px")
+```
+
+Notice that the first few rows of this CSV show recodes that are **common to all samples** (both `sample` and `year` are marked "all"). You do not need to enter any recodes that are common to all samples. 
+
+Because `sample` codes are sometimes repeated for multiple years, you may specify a year in `year` or use "all" to apply recoding to all years for that sample code.
+
+**If your sample contains an input value that you do not specify here, it will be recoded NA in the output**. For example, many samples contain the value "?" representing non-response; these are automatically recoded `NA`. Likewise, if you *forget* to insert any recodes here, sample-specific codes will be recoded `NA`. 
+
+**If you need to overwrite a recode that is otherwise common to all samples, you may do so**. The function that reads this CSV file will default to the recoding specified for your sample if there is a conflict will "all" samples.
+
+The value in `output` must be a number. 
+
+# vcal_discont_recodes.csv
+
+Locate the file at `./ipums/dhs/general/calendar/sample_tracking/vcal_discont_recodes.csv` (substitute "." for the location of the ipums folder on your system). 
+
+Once you've identified the discontinuation calendar `vcal_discont` , you'll need to check to see if it contains any sample-specific codes. Consult the [DHS Final Report](https://dhsprogram.com/publications/index.cfm) for your sample for help with this task.
+
+You'll then enter recoding information into this CSV file. 
+
+*Preview as of this writing:*
+
+```{r, message=FALSE}
+read_csv("../resources/vcal_discont_recodes.csv") %>%
+  kable() %>%
+  kable_styling() %>%
+  scroll_box(height = "500px")
+```
+
+Notice that the first few rows of this CSV show recodes that are **common to all samples** (both `sample` and `year` are marked "all"). You do not need to enter any recodes that are common to all samples. 
+
+Because `sample` codes are sometimes repeated for multiple years, you may specify a year in `year` or use "all" to apply recoding to all years for that sample code.
+
+**If your sample contains an input value that you do not specify here, it will be recoded NA in the output**. For example, many samples contain the value "?" representing non-response; these are automatically recoded `NA`. Likewise, if you *forget* to insert any recodes here, sample-specific codes will be recoded `NA`. 
+
+**If you need to overwrite a recode that is otherwise common to all samples, you may do so** (e.g. see EG4 2005, input `K`). The function that reads this CSV file will default to the recoding specified for your sample if there is a conflict will "all" samples.
+
+The value in `output` must be a number. 
+
+# make_lr
+
+This **R function** creates an unlinked LR file containing all of the derived calendar variables (including placeholders for those that were not available for your sample). All files created by this function will be written to the folder at `./dhs/general/calendar/programming/unlinked_lr_data` (substitute "." for the location of the ipums folder on your system). 
+
+**I highly recommend that you install this package and run this function on [the RStudio server](https://rstudio.pop.umn.edu/)** rather than your local installation of RStudio. 
+
+The **first time** you use this package, you'll need to install it. [Follow the installation instructions shown here](./articles/Installation.html).
+
+If you have installed this package and completed the three pre-processing tasks above, you should be able to use `make_lr()` with your sample like this:
+
+```{r, eval = F, echo = T}
+library(DHScalendars)
+make_lr("af2015ir")
+```
+
+Or, if you have a bunch of samples, you can pass them to `make_lr()` in a loop like this:
+
+```{r, eval = F, echo = T}
+library(DHScalendars)
+
+# here is my to-do list:
+samples <- c("af2015ir", "ao2015ir")
+
+# here is my loop:
+for(s in samples){
+  message(s) # optional: prints a message each time a sample is finished
+  make_lr(s)
+}
+```
+
+If you're feeling crafty, you can even read a vector of samples from a CSV file. Here's how you might process all of the samples in `vcal_availability.csv` (this would probably take around 2 hours on the RStudio server):
+
+```{r,  eval = F, echo = T}
+library(DHScalendars)
+
+# I make my to-do list from the CSV file:
+samples <- read_csv(
+  "/pkg/ipums/dhs/general/calendar/sample_tracking/vcal_availability.csv"
+  ) %>%
+  pull(SAMPLE)
+
+# This loop processes ALL samples:
+for(s in samples){
+  message(s) # optional: prints a message each time a sample is finished
+  make_lr(s)
+}
+```
+
+## Using make_lr on the cluster
+
+When the first large batch of LR files was processed in 2021, the job included several samples (e.g. India 2015) that would overwhelm the memory available to  R. Moreover, processing for all samples would take many hours. 
+
+As an alternative to processing samples on the RStudio server, I used Derek's excellent [runoncluster](https://github.umn.edu/burkx031/runoncluster) package for R to send this job to the cluster. You'll need to follow his instructions for setting up package installation instructions with [renv](https://rstudio.github.io/renv/articles/renv.html) and `git`.
+
+# Python
+ 
+When you've finished processing LR samples with  `make_lr`, use a Terminal on a general purpose server (e.g. `gp2`) and run the `dhs_calendar_linking` **Python script**. This will create *both* a linked data file *and* and new data dictionary for your new `lr` sample. 
+
+If you provide only one sample, the function will run on the general purpose server (e.g. `gp2`). For example:
+
+`dhs_lr_data -s af2015lr`
+
+You can also run multiple samples as a job on the cluster. For example:
+
+`dhs_lr_data -s lr2019lr gm2019lr sl2019lr`
+
+You will see a message with a link to a URL where you can monitor progress. 
