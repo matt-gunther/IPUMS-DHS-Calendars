@@ -1,7 +1,5 @@
 ---
 title: "DHScalendars - Processing IPUMS DHS reproductive calendar data"
-author: Matt Gunther <mgunther@umn.edu>
-date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: github_document
 ---
 
